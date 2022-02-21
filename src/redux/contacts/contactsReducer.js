@@ -4,7 +4,7 @@ import * as contactsActions from "./contactsActions";
 
 const setInfo = (_state, { payload }) => payload;
 
-const contactsReducer = createReducer([], {
+const itemsReducer = createReducer([], {
   [fetchContacts.fulfilled]: setInfo,
   [addContact.fulfilled]: (state, { payload }) => [payload, ...state],
   [removeContact.fulfilled]: (state, { payload }) =>
@@ -36,9 +36,11 @@ const filterReducer = createReducer("", {
   [contactsActions.filterContacts]: (_, { payload }) => payload,
 });
 
-export default combineReducers({
-  contacts: contactsReducer,
+const contactsReducer = combineReducers({
+  contacts: itemsReducer,
   filter: filterReducer,
   isLoading: isLoadingReducer,
   error: errorReducer,
 });
+
+export default contactsReducer;

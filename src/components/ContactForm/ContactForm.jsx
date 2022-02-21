@@ -5,9 +5,11 @@ import { addContact } from "../../redux//contacts/contactsOperations";
 import { nanoid } from "nanoid";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Oval } from "react-loader-spinner";
 
 const ContactForm = () => {
   const contacts = useSelector((state) => state.contacts.contacts);
+  const isLoading = useSelector((state) => state.contacts.isLoading);
   const dispatch = useDispatch();
 
   const [name, setName] = useState("");
@@ -85,6 +87,7 @@ const ContactForm = () => {
           </button>
         </div>
       </form>
+      {isLoading && <Oval heigth="40" width="40" color="blue" />}
     </>
   );
 };
