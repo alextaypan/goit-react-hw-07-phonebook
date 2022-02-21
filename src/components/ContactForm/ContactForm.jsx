@@ -5,11 +5,9 @@ import { addContact } from "../../redux//contacts/contactsOperations";
 import { nanoid } from "nanoid";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Oval } from "react-loader-spinner";
 
 const ContactForm = () => {
   const contacts = useSelector((state) => state.contacts.contacts);
-  const isLoading = useSelector((state) => state.contacts.isLoading);
   const dispatch = useDispatch();
 
   const [name, setName] = useState("");
@@ -42,13 +40,13 @@ const ContactForm = () => {
           contact.name.toLowerCase() === newContact.name.toLowerCase()
       )
     ) {
-      return toast.info(`${newContact.name} is already in contacts!`);
+      return toast.warn(`${newContact.name} is already in contacts!`);
     }
     setName("");
     setPhone("");
     const successContactAdd = dispatch(addContact(newContact));
     if (successContactAdd) {
-      return toast.info(`${newContact.name} was successfully added`);
+      return toast.success(`${newContact.name} was successfully added`);
     }
   };
 
@@ -87,7 +85,6 @@ const ContactForm = () => {
           </button>
         </div>
       </form>
-      {isLoading && <Oval heigth="40" width="40" color="blue" />}
     </>
   );
 };
