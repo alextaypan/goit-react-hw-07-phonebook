@@ -1,15 +1,17 @@
 import { useState } from "react";
 import s from "./ContactForm.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { addContact } from "../../redux/contacts/contactsActions";
+import { addContact } from "../../redux//contacts/contactsOperations";
 import { nanoid } from "nanoid";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ContactForm = () => {
-  const contacts = useSelector((state) => state.contacts.items);
+  const contacts = useSelector((state) => state.contacts.contacts);
   const dispatch = useDispatch();
 
   const [name, setName] = useState("");
-  const [number, setNumber] = useState("");
+  const [phone, setPhone] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,7 +20,7 @@ const ContactForm = () => {
         setName(value);
         break;
       case "number":
-        setNumber(value);
+        setPhone(value);
         break;
       default:
         return;
@@ -30,14 +32,22 @@ const ContactForm = () => {
     const newContact = {
       id: nanoid(),
       name,
-      number,
+      phone,
     };
-    dispatch(addContact(newContact));
-    if (contacts.find((contact) => contact.name === newContact.name)) {
-      return alert(`${newContact.name} is already in contacts`);
+    if (
+      contacts.find(
+        (contact) =>
+          contact.name.toLowerCase() === newContact.name.toLowerCase()
+      )
+    ) {
+      return toast.info(`${newContact.name} is already in contacts!`);
     }
     setName("");
-    setNumber("");
+    setPhone("");
+    const successContactAdd = dispatch(addContact(newContact));
+    if (successContactAdd) {
+      return toast.info(`${newContact.name} was successfully added`);
+    }
   };
 
   return (
@@ -62,7 +72,7 @@ const ContactForm = () => {
             className={s.input}
             type="tel"
             name="number"
-            value={number}
+            value={phone}
             onChange={handleChange}
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"

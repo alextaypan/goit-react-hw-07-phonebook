@@ -1,10 +1,16 @@
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import s from "./ContactList.module.css";
-import { removeContact } from "../../redux/contacts/contactsActions";
+import {
+  removeContact,
+  fetchContacts,
+} from "../../redux/contacts/contactsOperations";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const ContactList = () => {
-  const contacts = useSelector((state) => state.contacts.items);
+  const contacts = useSelector((state) => state.contacts.contacts);
   const filter = useSelector((state) => state.contacts.filter);
 
   const filteredContacts = contacts.filter((contact) =>
@@ -13,18 +19,24 @@ export const ContactList = () => {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
+
   return (
     <ul className={s.list}>
-      {filteredContacts.map(({ id, name, number }) => (
+      {filteredContacts.map(({ id, name, phone }) => (
         <li key={id} className={s.item}>
           <p>
-            {name}: {number}
+            {name}: {phone}
           </p>
           <button
             type="button"
             className={s.button}
             onClick={() => {
-              dispatch(removeContact(id));
+              if (dispatch(removeContact(Number(id)))) {
+                toast.success(`${name} was successfully deleted`);
+              }
             }}
           >
             Delete
